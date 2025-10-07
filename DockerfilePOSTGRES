@@ -13,8 +13,6 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     flex \
     bison \
-    python3-pip \
-    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install pgvector

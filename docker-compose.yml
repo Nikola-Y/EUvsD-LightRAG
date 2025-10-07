@@ -26,10 +26,10 @@ services:
       - "host.docker.internal:host-gateway"
 
   db:
-#    image: apache/age:latest
-    build:
-      context: .
-      dockerfile: DockerfilePOSTGRES
+    image: registry-1.docker.io/nikolayfm/lightrag-db:latest
+#    build:
+#      context: .
+#      dockerfile: DockerfilePOSTGRES
     container_name: lightrag_db
     restart: unless-stopped
     environment:
