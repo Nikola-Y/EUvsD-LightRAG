@@ -1,0 +1,23 @@
+FROM apache/age
+
+# Install build dependencies for AGE and pgvector
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    postgresql-server-dev-$PG_MAJOR \
+    git \
+    make \
+    cmake \
+    libssl-dev \
+    libreadline-dev \
+    postgresql-16-pgvector \
+    zlib1g-dev \
+    flex \
+    bison \
+    python3-pip \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install pgvector
+RUN git clone https://github.com/pgvector/pgvector.git \
+    && cd pgvector \
+    && make && make install

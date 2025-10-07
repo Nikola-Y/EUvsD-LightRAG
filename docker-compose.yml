@@ -19,6 +19,24 @@ services:
       - .env
     environment:
       - TIKTOKEN_CACHE_DIR=/app/data/tiktoken
+    depends_on:
+      - db
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
+  db:
+#    image: apache/age:latest
+    build:
+      context: .
+      dockerfile: DockerfilePOSTGRES
+    container_name: lightrag_db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DATABASE}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db-init:/docker-entrypoint-initdb.d
