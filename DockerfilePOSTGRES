@@ -3,7 +3,7 @@ FROM apache/age
 # Install build dependencies for AGE and pgvector
 RUN apt-get update && apt-get install -y \
     build-essential \
-    postgresql-server-dev-$PG_MAJOR \
+    postgresql-server-dev-16 \
     git \
     make \
     cmake \
