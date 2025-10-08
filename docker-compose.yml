@@ -15,6 +15,7 @@ services:
       - ./data/tiktoken:/app/data/tiktoken
       - ./config.ini:/app/config.ini
       - ./.env:/app/.env
+      - ./lightrag:/app/lightrag
     env_file:
       - .env
     environment:
