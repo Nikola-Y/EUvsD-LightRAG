@@ -27,6 +27,7 @@ import { labelColorDarkTheme, labelColorLightTheme } from '@/lib/constants'
 
 import '@react-sigma/core/lib/style.css'
 import '@react-sigma/graph-search/lib/style.css'
+import { useAuthStore } from '@/stores/state.ts'
 
 // Function to create sigma settings based on theme
 const createSigmaSettings = (isDarkTheme: boolean): Partial<SigmaSettings> => ({
@@ -115,10 +116,10 @@ const GraphViewer = () => {
   const selectedNode = useGraphStore.use.selectedNode()
   const focusedNode = useGraphStore.use.focusedNode()
   const moveToSelectedNode = useGraphStore.use.moveToSelectedNode()
+  const { isAdmin } = useAuthStore()
   const isFetching = useGraphStore.use.isFetching()
-
   const showPropertyPanel = useSettingsStore.use.showPropertyPanel()
-  const showNodeSearchBar = useSettingsStore.use.showNodeSearchBar()
+  const showNodeSearchBar = isAdmin && useSettingsStore.use.showNodeSearchBar()
   const enableNodeDrag = useSettingsStore.use.enableNodeDrag()
   const showLegend = useSettingsStore.use.showLegend()
   const theme = useSettingsStore.use.theme()
@@ -206,7 +207,7 @@ const GraphViewer = () => {
         <FocusOnNode node={autoFocusedNode} move={moveToSelectedNode} />
 
         <div className="absolute top-2 left-2 flex items-start gap-2">
-          <GraphLabels />
+          {isAdmin && <GraphLabels />}
           {showNodeSearchBar && !isThemeSwitching && (
             <GraphSearch
               value={searchInitSelectedNode}

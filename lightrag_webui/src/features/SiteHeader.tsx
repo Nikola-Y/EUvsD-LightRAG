@@ -33,22 +33,29 @@ function NavigationTab({ value, currentTab, children }: NavigationTabProps) {
 function TabsNavigation() {
   const currentTab = useSettingsStore.use.currentTab()
   const { t } = useTranslation()
+  const { isAdmin } = useAuthStore()
 
   return (
     <div className="flex h-8 self-center">
       <TabsList className="h-full gap-2">
-        <NavigationTab value="documents" currentTab={currentTab}>
-          {t('header.documents')}
-        </NavigationTab>
+        {isAdmin && (
+          <NavigationTab value="documents" currentTab={currentTab}>
+            {t('header.documents')}
+          </NavigationTab>
+        )}
         <NavigationTab value="knowledge-graph" currentTab={currentTab}>
           {t('header.knowledgeGraph')}
         </NavigationTab>
+        {/*{isAdmin && (*/}
         <NavigationTab value="retrieval" currentTab={currentTab}>
           {t('header.retrieval')}
         </NavigationTab>
-        {/*<NavigationTab value="api" currentTab={currentTab}>*/}
-        {/*  {t('header.api')}*/}
-        {/*</NavigationTab>*/}
+        {/*)}*/}
+        {isAdmin && (
+          <NavigationTab value="api" currentTab={currentTab}>
+            {t('header.api')}
+          </NavigationTab>
+        )}
       </TabsList>
     </div>
   )
@@ -56,7 +63,7 @@ function TabsNavigation() {
 
 export default function SiteHeader() {
   const { t } = useTranslation()
-  const { isGuestMode, coreVersion, apiVersion, username, webuiTitle, webuiDescription } = useAuthStore()
+  const { isGuestMode, coreVersion, apiVersion, username, webuiTitle, webuiDescription, isAdmin } = useAuthStore()
 
   const versionDisplay = (coreVersion && apiVersion)
     ? `${coreVersion}/${apiVersion}`
@@ -105,16 +112,18 @@ export default function SiteHeader() {
 
       <nav className="w-[200px] flex items-center justify-end">
         <div className="flex items-center gap-2">
-          {versionDisplay && (
+          {isAdmin && versionDisplay && (
             <span className="text-xs text-gray-500 dark:text-gray-400 mr-1">
               v{versionDisplay}
             </span>
           )}
-          <Button variant="ghost" size="icon" side="bottom" tooltip={t('header.projectRepository')}>
-            <a href={SiteInfo.github} target="_blank" rel="noopener noreferrer">
-              <GithubIcon className="size-4" aria-hidden="true" />
-            </a>
-          </Button>
+          {isAdmin && (
+            <Button variant="ghost" size="icon" side="bottom" tooltip={t('header.projectRepository')}>
+              <a href={SiteInfo.github} target="_blank" rel="noopener noreferrer">
+                <GithubIcon className="size-4" aria-hidden="true" />
+              </a>
+            </Button>
+          )}
           <AppSettings />
           {!isGuestMode && (
             <Button
