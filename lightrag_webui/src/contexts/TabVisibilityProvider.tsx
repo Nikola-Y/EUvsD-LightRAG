@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { TabVisibilityContext } from './context';
 import { TabVisibilityContextType } from './types';
 import { useSettingsStore } from '@/stores/settings';
+import { useAuthStore } from '@/stores/state.ts'
 
 interface TabVisibilityProviderProps {
   children: React.ReactNode;
@@ -14,23 +15,24 @@ interface TabVisibilityProviderProps {
 export const TabVisibilityProvider: React.FC<TabVisibilityProviderProps> = ({ children }) => {
   // Get current tab from settings store
   const currentTab = useSettingsStore.use.currentTab();
+  const { isAdmin } = useAuthStore()
 
   // Initialize visibility state with all tabs visible
   const [visibleTabs, setVisibleTabs] = useState<Record<string, boolean>>(() => ({
-    'documents': true,
+    'documents': isAdmin,
     'knowledge-graph': true,
     'retrieval': true,
-    'api': false
+    'api': isAdmin
   }));
 
   // Keep all tabs visible because we use CSS to control TAB visibility instead of React
   useEffect(() => {
     setVisibleTabs((prev) => ({
       ...prev,
-      'documents': true,
+      'documents': isAdmin,
       'knowledge-graph': true,
       'retrieval': true,
-      'api': false
+      'api': isAdmin
     }));
   }, [currentTab]);
 

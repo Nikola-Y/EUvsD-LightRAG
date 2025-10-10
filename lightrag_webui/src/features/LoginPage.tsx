@@ -86,7 +86,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!username || !password) {
+    if (!username) {
       toast.error(t('login.errorEmptyFields'))
       return
     }
@@ -189,7 +189,6 @@ const LoginPage = () => {
                 placeholder={t('login.passwordPlaceholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
                 className="h-11 flex-1"
               />
             </div>

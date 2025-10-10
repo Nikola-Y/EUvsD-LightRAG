@@ -33,7 +33,8 @@ interface AuthState {
   username: string | null; // login username
   webuiTitle: string | null; // Custom title
   webuiDescription: string | null; // Title description
-
+  isAdmin: boolean;
+  isUser: boolean;
   login: (token: string, isGuest?: boolean, coreVersion?: string | null, apiVersion?: string | null, webuiTitle?: string | null, webuiDescription?: string | null) => void;
   logout: () => void;
   setVersion: (coreVersion: string | null, apiVersion: string | null) => void;
@@ -179,13 +180,15 @@ const isGuestToken = (token: string): boolean => {
   return payload.role === 'guest';
 };
 
-const initAuthState = (): { isAuthenticated: boolean; isGuestMode: boolean; coreVersion: string | null; apiVersion: string | null; username: string | null; webuiTitle: string | null; webuiDescription: string | null } => {
+const initAuthState = (): { isAuthenticated: boolean; isGuestMode: boolean; coreVersion: string | null; apiVersion: string | null; username: string | null; webuiTitle: string | null; webuiDescription: string | null, isUser: boolean, isAdmin: boolean } => {
   const token = localStorage.getItem('LIGHTRAG-API-TOKEN');
   const coreVersion = localStorage.getItem('LIGHTRAG-CORE-VERSION');
   const apiVersion = localStorage.getItem('LIGHTRAG-API-VERSION');
   const webuiTitle = localStorage.getItem('LIGHTRAG-WEBUI-TITLE');
   const webuiDescription = localStorage.getItem('LIGHTRAG-WEBUI-DESCRIPTION');
   const username = token ? getUsernameFromToken(token) : null;
+  const isUser = username !== null && username.startsWith('user');
+  const isAdmin= username !== null && username.startsWith('admin');
 
   if (!token) {
     return {
@@ -196,6 +199,8 @@ const initAuthState = (): { isAuthenticated: boolean; isGuestMode: boolean; core
       username: null,
       webuiTitle: webuiTitle,
       webuiDescription: webuiDescription,
+      isUser: false,
+      isAdmin: false,
     };
   }
 
@@ -207,6 +212,8 @@ const initAuthState = (): { isAuthenticated: boolean; isGuestMode: boolean; core
     username: username,
     webuiTitle: webuiTitle,
     webuiDescription: webuiDescription,
+    isUser: isUser,
+    isAdmin: isAdmin,
   };
 };
 
@@ -222,6 +229,8 @@ export const useAuthStore = create<AuthState>(set => {
     username: initialState.username,
     webuiTitle: initialState.webuiTitle,
     webuiDescription: initialState.webuiDescription,
+    isUser: initialState.username !== null && initialState.username.startsWith('user'),
+    isAdmin: initialState.username !== null && initialState.username.startsWith('admin'),
 
     login: (token, isGuest = false, coreVersion = null, apiVersion = null, webuiTitle = null, webuiDescription = null) => {
       localStorage.setItem('LIGHTRAG-API-TOKEN', token);
@@ -254,6 +263,8 @@ export const useAuthStore = create<AuthState>(set => {
         apiVersion: apiVersion,
         webuiTitle: webuiTitle,
         webuiDescription: webuiDescription,
+        isUser: username !== null && username.startsWith('user'),
+        isAdmin: username !== null && username.startsWith('admin'),
       });
     },
 
@@ -273,6 +284,8 @@ export const useAuthStore = create<AuthState>(set => {
         apiVersion: apiVersion,
         webuiTitle: webuiTitle,
         webuiDescription: webuiDescription,
+        isUser: false,
+        isAdmin: false,
       });
     },
 
