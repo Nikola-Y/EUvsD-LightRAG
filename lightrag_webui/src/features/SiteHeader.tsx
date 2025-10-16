@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { navigationService } from '@/services/navigation'
 import { ZapIcon, GithubIcon, LogOutIcon } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/Tooltip'
+import { useEffect } from 'react'
 
 interface NavigationTabProps {
   value: string
@@ -33,7 +34,14 @@ function NavigationTab({ value, currentTab, children }: NavigationTabProps) {
 function TabsNavigation() {
   const currentTab = useSettingsStore.use.currentTab()
   const { t } = useTranslation()
-  const { isAdmin } = useAuthStore()
+  const { isAdmin, isUser } = useAuthStore()
+
+  useEffect(() => {
+    if (isUser && (currentTab === 'documents' || currentTab === 'api')) {
+      useSettingsStore.getState().setCurrentTab('knowledge-graph')
+      window.location.reload()
+    }
+  }, [currentTab, isUser])
 
   return (
     <div className="flex h-8 self-center">

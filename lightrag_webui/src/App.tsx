@@ -26,6 +26,7 @@ function App() {
   const [initializing, setInitializing] = useState(true) // Add initializing state
   const versionCheckRef = useRef(false); // Prevent duplicate calls in Vite dev mode
   const healthCheckInitializedRef = useRef(false); // Prevent duplicate health checks in Vite dev mode
+  const { isAdmin } = useAuthStore()
 
   const handleApiKeyAlertOpenChange = useCallback((open: boolean) => {
     setApiKeyAlertOpen(open)
@@ -204,18 +205,22 @@ function App() {
             >
               <SiteHeader />
               <div className="relative grow">
-                <TabsContent value="documents" className="absolute top-0 right-0 bottom-0 left-0 overflow-auto">
-                  <DocumentManager />
-                </TabsContent>
+                {isAdmin && (
+                  <TabsContent value="documents" className="absolute top-0 right-0 bottom-0 left-0 overflow-auto">
+                    <DocumentManager />
+                  </TabsContent>
+                )}
                 <TabsContent value="knowledge-graph" className="absolute top-0 right-0 bottom-0 left-0 overflow-hidden">
                   <GraphViewer />
                 </TabsContent>
                 <TabsContent value="retrieval" className="absolute top-0 right-0 bottom-0 left-0 overflow-hidden">
                   <RetrievalTesting />
                 </TabsContent>
-                <TabsContent value="api" className="absolute top-0 right-0 bottom-0 left-0 overflow-hidden">
-                  <ApiSite />
-                </TabsContent>
+                {isAdmin && (
+                  <TabsContent value="api" className="absolute top-0 right-0 bottom-0 left-0 overflow-hidden">
+                    <ApiSite />
+                  </TabsContent>
+                )}
               </div>
             </Tabs>
             {enableHealthCheck && <StatusIndicator />}

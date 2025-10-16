@@ -34,7 +34,7 @@ export const TabVisibilityProvider: React.FC<TabVisibilityProviderProps> = ({ ch
       'retrieval': true,
       'api': isAdmin
     }));
-  }, [currentTab]);
+  }, [currentTab, isAdmin]);
 
   // Create the context value with memoization to prevent unnecessary re-renders
   const contextValue = useMemo<TabVisibilityContextType>(
