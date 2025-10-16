@@ -16,10 +16,86 @@ const LoginPage = () => {
   const { login, isAuthenticated } = useAuthStore()
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
-  const [username, setUsername] = useState('')
+  const [username, setUsername] = useState('user')
   const [password, setPassword] = useState('')
   const [checkingAuth, setCheckingAuth] = useState(true)
   const authCheckRef = useRef(false); // Prevent duplicate calls in Vite dev mode
+
+  const handleLogin = async (usernameField: string, passwordField: any) => {
+    if (!usernameField) {
+      toast.error(t('login.errorEmptyFields'))
+      return
+    }
+
+    try {
+      setLoading(true)
+      const response = await loginToServer(usernameField, passwordField)
+
+      // Get previous usernameField from localStorage
+      const previousUsername = localStorage.getItem('LIGHTRAG-PREVIOUS-USER')
+
+      // Check if it's the same user logging in again
+      const isSameUser = previousUsername === usernameField
+
+      // If it's not the same user, clear chat history
+      if (isSameUser) {
+        console.log('Same user logging in, preserving chat history')
+      } else {
+        console.log('Different user logging in, clearing chat history')
+        // Directly clear chat history instead of setting a flag
+        useSettingsStore.getState().setRetrievalHistory([])
+      }
+
+      // Update previous username
+      localStorage.setItem('LIGHTRAG-PREVIOUS-USER', usernameField)
+
+      // Check authentication mode
+      const isGuestMode = response.auth_mode === 'disabled'
+      login(response.access_token, isGuestMode, response.core_version, response.api_version, response.webui_title || null, response.webui_description || null)
+
+      // Set session flag for version check
+      if (response.core_version || response.api_version) {
+        sessionStorage.setItem('VERSION_CHECKED_FROM_LOGIN', 'true');
+      }
+
+      if (isGuestMode) {
+        // Show authentication disabled notification
+        toast.info(response.message || t('login.authDisabled', 'Authentication is disabled. Using guest access.'))
+      } else {
+        // toast.success(t('login.successMessage'))
+      }
+
+      // Navigate to home page after successful login
+      navigate('/')
+    } catch (error) {
+      console.error('Login failed...', error)
+      toast.error(t('login.errorInvalidCredentials'))
+
+      // Clear any existing auth state
+      useAuthStore.getState().logout()
+      // Clear local storage
+      localStorage.removeItem('LIGHTRAG-API-TOKEN')
+    } finally {
+      setLoading(false)
+    }
+  }
+  const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
+    if (e) {
+      e.preventDefault();
+    }
+
+    await handleLogin(username, password)
+  }
+
+  useEffect(() => {
+    // Get previous username from localStorage
+    const previousUsername = localStorage.getItem('LIGHTRAG-PREVIOUS-USER')
+
+    if ((previousUsername === '' || previousUsername === null) && (username === '' || username === 'user')) {
+      setUsername('user');
+      handleLogin('user', '');
+    }
+  }, [handleLogin, username]);
 
   useEffect(() => {
     console.log('LoginPage mounted')
@@ -84,66 +160,6 @@ const LoginPage = () => {
     return null
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!username) {
-      toast.error(t('login.errorEmptyFields'))
-      return
-    }
-
-    try {
-      setLoading(true)
-      const response = await loginToServer(username, password)
-
-      // Get previous username from localStorage
-      const previousUsername = localStorage.getItem('LIGHTRAG-PREVIOUS-USER')
-
-      // Check if it's the same user logging in again
-      const isSameUser = previousUsername === username
-
-      // If it's not the same user, clear chat history
-      if (isSameUser) {
-        console.log('Same user logging in, preserving chat history')
-      } else {
-        console.log('Different user logging in, clearing chat history')
-        // Directly clear chat history instead of setting a flag
-        useSettingsStore.getState().setRetrievalHistory([])
-      }
-
-      // Update previous username
-      localStorage.setItem('LIGHTRAG-PREVIOUS-USER', username)
-
-      // Check authentication mode
-      const isGuestMode = response.auth_mode === 'disabled'
-      login(response.access_token, isGuestMode, response.core_version, response.api_version, response.webui_title || null, response.webui_description || null)
-
-      // Set session flag for version check
-      if (response.core_version || response.api_version) {
-        sessionStorage.setItem('VERSION_CHECKED_FROM_LOGIN', 'true');
-      }
-
-      if (isGuestMode) {
-        // Show authentication disabled notification
-        toast.info(response.message || t('login.authDisabled', 'Authentication is disabled. Using guest access.'))
-      } else {
-        toast.success(t('login.successMessage'))
-      }
-
-      // Navigate to home page after successful login
-      navigate('/')
-    } catch (error) {
-      console.error('Login failed...', error)
-      toast.error(t('login.errorInvalidCredentials'))
-
-      // Clear any existing auth state
-      useAuthStore.getState().logout()
-      // Clear local storage
-      localStorage.removeItem('LIGHTRAG-API-TOKEN')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-100 dark:from-gray-900 dark:to-gray-800">
       <div className="absolute top-4 right-4 flex items-center gap-2">
@@ -179,19 +195,21 @@ const LoginPage = () => {
                 className="h-11 flex-1"
               />
             </div>
-            <div className="flex items-center gap-4">
-              <label htmlFor="password-input" className="text-sm font-medium w-16 shrink-0">
-                {t('login.password')}
-              </label>
-              <Input
-                id="password-input"
-                type="password"
-                placeholder={t('login.passwordPlaceholder')}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="h-11 flex-1"
-              />
-            </div>
+            {username !== 'user' && (
+              <div className="flex items-center gap-4">
+                <label htmlFor="password-input" className="text-sm font-medium w-16 shrink-0">
+                  {t('login.password')}
+                </label>
+                <Input
+                  id="password-input"
+                  type="password"
+                  placeholder={t('login.passwordPlaceholder')}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-11 flex-1"
+                />
+              </div>
+            )}
             <Button
               type="submit"
               className="w-full h-11 text-base font-medium mt-2"
