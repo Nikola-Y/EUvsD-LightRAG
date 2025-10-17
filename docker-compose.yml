@@ -32,7 +32,7 @@ services:
 #      context: .
 #      dockerfile: DockerfilePOSTGRES
     container_name: lightrag_db
-    restart: unless-stopped
+    restart: always
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
