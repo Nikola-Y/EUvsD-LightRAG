@@ -3,13 +3,11 @@ import ThemeProvider from '@/components/ThemeProvider'
 import TabVisibilityProvider from '@/contexts/TabVisibilityProvider'
 import ApiKeyAlert from '@/components/ApiKeyAlert'
 import StatusIndicator from '@/components/status/StatusIndicator'
-import { SiteInfo, webuiPrefix } from '@/lib/constants'
 import { useBackendState, useAuthStore } from '@/stores/state'
 import { useSettingsStore } from '@/stores/settings'
 import { getAuthStatus } from '@/api/lightrag'
 import SiteHeader from '@/features/SiteHeader'
 import { InvalidApiKeyError, RequireApiKeError } from '@/api/lightrag'
-import { ZapIcon } from 'lucide-react'
 
 import GraphViewer from '@/features/GraphViewer'
 import DocumentManager from '@/features/DocumentManager'
@@ -171,12 +169,12 @@ function App() {
           <div className="flex h-screen w-screen flex-col">
             {/* Simplified header during initialization - matches SiteHeader structure */}
             <header className="border-border/40 bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 flex h-10 w-full border-b px-4 backdrop-blur">
-              <div className="min-w-[200px] w-auto flex items-center">
-                <a href={webuiPrefix} className="flex items-center gap-2">
-                  <ZapIcon className="size-4 text-emerald-400" aria-hidden="true" />
-                  <span className="font-bold md:inline-block">{SiteInfo.name}</span>
-                </a>
-              </div>
+              {/*<div className="min-w-[200px] w-auto flex items-center">*/}
+              {/*  <a href={webuiPrefix} className="flex items-center gap-2">*/}
+              {/*    <ZapIcon className="size-4 text-emerald-400" aria-hidden="true" />*/}
+              {/*    <span className="font-bold md:inline-block">{SiteInfo.name}</span>*/}
+              {/*  </a>*/}
+              {/*</div>*/}
 
               {/* Empty middle section to maintain layout */}
               <div className="flex h-10 flex-1 items-center justify-center">
