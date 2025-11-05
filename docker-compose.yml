@@ -20,9 +20,9 @@ services:
       - .env
     environment:
       - TIKTOKEN_CACHE_DIR=/app/data/tiktoken
-    depends_on:
-#      - db
-      - ollama
+#    depends_on:
+##      - db
+#      - ollama
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -44,18 +44,18 @@ services:
 #      - ./db-init:/docker-entrypoint-initdb.d
 #      - ./data/postgres:/var/lib/postgresql/data
 
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama_service
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-    runtime: nvidia
-    ports:
-      - "11434:11434" # порт для API Ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+#  ollama:
+#    image: ollama/ollama:latest
+#    container_name: ollama_service
+#    environment:
+#      - NVIDIA_VISIBLE_DEVICES=all
+#    runtime: nvidia
+#    ports:
+#      - "11434:11434" # порт для API Ollama
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - driver: nvidia
+#              count: all
+#              capabilities: [gpu]
