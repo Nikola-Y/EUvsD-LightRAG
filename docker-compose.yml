@@ -20,9 +20,9 @@ services:
       - .env
     environment:
       - TIKTOKEN_CACHE_DIR=/app/data/tiktoken
-    depends_on:
+#    depends_on:
 ##      - db
-      - ollama
+#      - ollama
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
