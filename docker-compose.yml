@@ -20,38 +20,21 @@ services:
       - .env
     environment:
       - TIKTOKEN_CACHE_DIR=/app/data/tiktoken
-#    depends_on:
+    depends_on:
 ##      - db
-#      - ollama
+      - ollama
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-#  db:
-#    image: registry-1.docker.io/nikolayfm/lightrag-db:latest
-##    build:
-##      context: .
-##      dockerfile: DockerfilePOSTGRES
-#    container_name: lightrag_db
-#    restart: always
-#    environment:
-#      - POSTGRES_USER=${POSTGRES_USER}
-#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-#      - POSTGRES_DB=${POSTGRES_DATABASE}
-#    ports:
-#      - "5432:5432"
-#    volumes:
-#      - ./db-init:/docker-entrypoint-initdb.d
-#      - ./data/postgres:/var/lib/postgresql/data
-
-#  ollama:
-#    image: ollama/ollama:latest
-#    container_name: ollama_service
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_service
 #    environment:
 #      - NVIDIA_VISIBLE_DEVICES=all
 #    runtime: nvidia
-#    ports:
-#      - "11434:11434" # порт для API Ollama
+    ports:
+      - "11434:11434" # порт для API Ollama
 #    deploy:
 #      resources:
 #        reservations:
