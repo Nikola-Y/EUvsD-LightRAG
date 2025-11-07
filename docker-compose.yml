@@ -27,14 +27,14 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama_service
-#    environment:
-#      - NVIDIA_VISIBLE_DEVICES=all
-#    runtime: nvidia
-    ports:
-      - "11434:11434" # порт для API Ollama
+#  ollama:
+#    image: ollama/ollama:latest
+#    container_name: ollama_service
+##    environment:
+##      - NVIDIA_VISIBLE_DEVICES=all
+##    runtime: nvidia
+#    ports:
+#      - "11434:11434" # порт для API Ollama
 #    deploy:
 #      resources:
 #        reservations:
