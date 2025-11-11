@@ -17,9 +17,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useSettingsStore } from '@/stores/settings'
 import { useTranslation } from 'react-i18next'
 import { RotateCcw } from 'lucide-react'
+import { useAuthStore } from '@/stores/state.ts'
 
 export default function QuerySettings() {
   const { t } = useTranslation()
+  const { isAdmin } = useAuthStore()
   const querySettings = useSettingsStore((state) => state.querySettings)
   const userPromptHistory = useSettingsStore((state) => state.userPromptHistory)
 
@@ -193,303 +195,270 @@ export default function QuerySettings() {
               </div>
             </>
 
-            {/* Top K */}
-            <>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <label htmlFor="top_k" className="ml-1 cursor-help">
-                      {t('retrievePanel.querySettings.topK')}
-                    </label>
-                  </TooltipTrigger>
-                  <TooltipContent side="left">
-                    <p>{t('retrievePanel.querySettings.topKTooltip')}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <div className="flex items-center gap-1">
-                <Input
-                  id="top_k"
-                  type="number"
-                  value={querySettings.top_k ?? ''}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    handleChange('top_k', value === '' ? '' : parseInt(value) || 0)
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value
-                    if (value === '' || isNaN(parseInt(value))) {
-                      handleChange('top_k', 40)
-                    }
-                  }}
-                  min={1}
-                  placeholder={t('retrievePanel.querySettings.topKPlaceholder')}
-                  className="h-9 flex-1 pr-2 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
-                />
-                <ResetButton
-                  onClick={() => handleReset('top_k')}
-                  title="Reset to default"
-                />
-              </div>
-            </>
 
-            {/* Chunk Top K */}
-            <>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <label htmlFor="chunk_top_k" className="ml-1 cursor-help">
-                      {t('retrievePanel.querySettings.chunkTopK')}
-                    </label>
-                  </TooltipTrigger>
-                  <TooltipContent side="left">
-                    <p>{t('retrievePanel.querySettings.chunkTopKTooltip')}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <div className="flex items-center gap-1">
-                <Input
-                  id="chunk_top_k"
-                  type="number"
-                  value={querySettings.chunk_top_k ?? ''}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    handleChange('chunk_top_k', value === '' ? '' : parseInt(value) || 0)
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value
-                    if (value === '' || isNaN(parseInt(value))) {
-                      handleChange('chunk_top_k', 20)
-                    }
-                  }}
-                  min={1}
-                  placeholder={t('retrievePanel.querySettings.chunkTopKPlaceholder')}
-                  className="h-9 flex-1 pr-2 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
-                />
-                <ResetButton
-                  onClick={() => handleReset('chunk_top_k')}
-                  title="Reset to default"
-                />
-              </div>
-            </>
+            { isAdmin &&
+              (
+                <>
+                  <>
+                    {/* Top K */}
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <label htmlFor="top_k" className="ml-1 cursor-help">
+                            {t('retrievePanel.querySettings.topK')}
+                          </label>
+                        </TooltipTrigger>
+                        <TooltipContent side="left">
+                          <p>{t('retrievePanel.querySettings.topKTooltip')}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <div className="flex items-center gap-1">
+                      <Input
+                        id="top_k"
+                        type="number"
+                        value={querySettings.top_k ?? ''}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          handleChange('top_k', value === '' ? '' : parseInt(value) || 0)
+                        }}
+                        onBlur={(e) => {
+                          const value = e.target.value
+                          if (value === '' || isNaN(parseInt(value))) {
+                            handleChange('top_k', 40)
+                          }
+                        }}
+                        min={1}
+                        placeholder={t('retrievePanel.querySettings.topKPlaceholder')}
+                        className="h-9 flex-1 pr-2 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      />
+                      <ResetButton
+                        onClick={() => handleReset('top_k')}
+                        title="Reset to default"
+                      />
+                    </div>
+                  </>
 
-            {/* Max Entity Tokens */}
-            <>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <label htmlFor="max_entity_tokens" className="ml-1 cursor-help">
-                      {t('retrievePanel.querySettings.maxEntityTokens')}
-                    </label>
-                  </TooltipTrigger>
-                  <TooltipContent side="left">
-                    <p>{t('retrievePanel.querySettings.maxEntityTokensTooltip')}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <div className="flex items-center gap-1">
-                <Input
-                  id="max_entity_tokens"
-                  type="number"
-                  value={querySettings.max_entity_tokens ?? ''}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    handleChange('max_entity_tokens', value === '' ? '' : parseInt(value) || 0)
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value
-                    if (value === '' || isNaN(parseInt(value))) {
-                      handleChange('max_entity_tokens', 6000)
-                    }
-                  }}
-                  min={1}
-                  placeholder={t('retrievePanel.querySettings.maxEntityTokensPlaceholder')}
-                  className="h-9 flex-1 pr-2 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
-                />
-                <ResetButton
-                  onClick={() => handleReset('max_entity_tokens')}
-                  title="Reset to default"
-                />
-              </div>
-            </>
+                  <>
+                    {/* Max Entity Tokens */}
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <label htmlFor="max_entity_tokens" className="ml-1 cursor-help">
+                            {t('retrievePanel.querySettings.maxEntityTokens')}
+                          </label>
+                        </TooltipTrigger>
+                        <TooltipContent side="left">
+                          <p>{t('retrievePanel.querySettings.maxEntityTokensTooltip')}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <div className="flex items-center gap-1">
+                      <Input
+                        id="max_entity_tokens"
+                        type="number"
+                        value={querySettings.max_entity_tokens ?? ''}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          handleChange('max_entity_tokens', value === '' ? '' : parseInt(value) || 0)
+                        }}
+                        onBlur={(e) => {
+                          const value = e.target.value
+                          if (value === '' || isNaN(parseInt(value))) {
+                            handleChange('max_entity_tokens', 6000)
+                          }
+                        }}
+                        min={1}
+                        placeholder={t('retrievePanel.querySettings.maxEntityTokensPlaceholder')}
+                        className="h-9 flex-1 pr-2 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      />
+                      <ResetButton
+                        onClick={() => handleReset('max_entity_tokens')}
+                        title="Reset to default"
+                      />
+                    </div>
+                  </>
+                  <>
+                    {/* Max Relation Tokens */}
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <label htmlFor="max_relation_tokens" className="ml-1 cursor-help">
+                            {t('retrievePanel.querySettings.maxRelationTokens')}
+                          </label>
+                        </TooltipTrigger>
+                        <TooltipContent side="left">
+                          <p>{t('retrievePanel.querySettings.maxRelationTokensTooltip')}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <div className="flex items-center gap-1">
+                      <Input
+                        id="max_relation_tokens"
+                        type="number"
+                        value={querySettings.max_relation_tokens ?? ''}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          handleChange('max_relation_tokens', value === '' ? '' : parseInt(value) || 0)
+                        }}
+                        onBlur={(e) => {
+                          const value = e.target.value
+                          if (value === '' || isNaN(parseInt(value))) {
+                            handleChange('max_relation_tokens', 8000)
+                          }
+                        }}
+                        min={1}
+                        placeholder={t('retrievePanel.querySettings.maxRelationTokensPlaceholder')}
+                        className="h-9 flex-1 pr-2 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      />
+                      <ResetButton
+                        onClick={() => handleReset('max_relation_tokens')}
+                        title="Reset to default"
+                      />
+                    </div>
+                  </>
 
-            {/* Max Relation Tokens */}
-            <>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <label htmlFor="max_relation_tokens" className="ml-1 cursor-help">
-                      {t('retrievePanel.querySettings.maxRelationTokens')}
-                    </label>
-                  </TooltipTrigger>
-                  <TooltipContent side="left">
-                    <p>{t('retrievePanel.querySettings.maxRelationTokensTooltip')}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <div className="flex items-center gap-1">
-                <Input
-                  id="max_relation_tokens"
-                  type="number"
-                  value={querySettings.max_relation_tokens ?? ''}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    handleChange('max_relation_tokens', value === '' ? '' : parseInt(value) || 0)
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value
-                    if (value === '' || isNaN(parseInt(value))) {
-                      handleChange('max_relation_tokens', 8000)
-                    }
-                  }}
-                  min={1}
-                  placeholder={t('retrievePanel.querySettings.maxRelationTokensPlaceholder')}
-                  className="h-9 flex-1 pr-2 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
-                />
-                <ResetButton
-                  onClick={() => handleReset('max_relation_tokens')}
-                  title="Reset to default"
-                />
-              </div>
-            </>
 
-            {/* Max Total Tokens */}
-            <>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <label htmlFor="max_total_tokens" className="ml-1 cursor-help">
-                      {t('retrievePanel.querySettings.maxTotalTokens')}
-                    </label>
-                  </TooltipTrigger>
-                  <TooltipContent side="left">
-                    <p>{t('retrievePanel.querySettings.maxTotalTokensTooltip')}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <div className="flex items-center gap-1">
-                <Input
-                  id="max_total_tokens"
-                  type="number"
-                  value={querySettings.max_total_tokens ?? ''}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    handleChange('max_total_tokens', value === '' ? '' : parseInt(value) || 0)
-                  }}
-                  onBlur={(e) => {
-                    const value = e.target.value
-                    if (value === '' || isNaN(parseInt(value))) {
-                      handleChange('max_total_tokens', 30000)
-                    }
-                  }}
-                  min={1}
-                  placeholder={t('retrievePanel.querySettings.maxTotalTokensPlaceholder')}
-                  className="h-9 flex-1 pr-2 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
-                />
-                <ResetButton
-                  onClick={() => handleReset('max_total_tokens')}
-                  title="Reset to default"
-                />
-              </div>
-            </>
+                  <>
+                    {/* Max Total Tokens */}
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <label htmlFor="max_total_tokens" className="ml-1 cursor-help">
+                            {t('retrievePanel.querySettings.maxTotalTokens')}
+                          </label>
+                        </TooltipTrigger>
+                        <TooltipContent side="left">
+                          <p>{t('retrievePanel.querySettings.maxTotalTokensTooltip')}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <div className="flex items-center gap-1">
+                      <Input
+                        id="max_total_tokens"
+                        type="number"
+                        value={querySettings.max_total_tokens ?? ''}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          handleChange('max_total_tokens', value === '' ? '' : parseInt(value) || 0)
+                        }}
+                        onBlur={(e) => {
+                          const value = e.target.value
+                          if (value === '' || isNaN(parseInt(value))) {
+                            handleChange('max_total_tokens', 30000)
+                          }
+                        }}
+                        min={1}
+                        placeholder={t('retrievePanel.querySettings.maxTotalTokensPlaceholder')}
+                        className="h-9 flex-1 pr-2 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      />
+                      <ResetButton
+                        onClick={() => handleReset('max_total_tokens')}
+                        title="Reset to default"
+                      />
+                    </div>
+                  </>
 
-            {/* Toggle Options */}
-            <>
-              <div className="flex items-center gap-2">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <label htmlFor="enable_rerank" className="flex-1 ml-1 cursor-help">
-                        {t('retrievePanel.querySettings.enableRerank')}
-                      </label>
-                    </TooltipTrigger>
-                    <TooltipContent side="left">
-                      <p>{t('retrievePanel.querySettings.enableRerankTooltip')}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <Checkbox
-                  className="mr-10 cursor-pointer"
-                  id="enable_rerank"
-                  checked={querySettings.enable_rerank}
-                  onCheckedChange={(checked) => handleChange('enable_rerank', checked)}
-                />
-              </div>
 
-              <div className="flex items-center gap-2">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <label htmlFor="only_need_context" className="flex-1 ml-1 cursor-help">
-                        {t('retrievePanel.querySettings.onlyNeedContext')}
-                      </label>
-                    </TooltipTrigger>
-                    <TooltipContent side="left">
-                      <p>{t('retrievePanel.querySettings.onlyNeedContextTooltip')}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <Checkbox
-                  className="mr-10 cursor-pointer"
-                  id="only_need_context"
-                  checked={querySettings.only_need_context}
-                  onCheckedChange={(checked) => {
-                    handleChange('only_need_context', checked)
-                    if (checked) {
-                      handleChange('only_need_prompt', false)
-                    }
-                  }}
-                />
-              </div>
+                  <>
+                    {/* Toggle Options */}
+                    <div className="flex items-center gap-2">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <label htmlFor="enable_rerank" className="flex-1 ml-1 cursor-help">
+                              {t('retrievePanel.querySettings.enableRerank')}
+                            </label>
+                          </TooltipTrigger>
+                          <TooltipContent side="left">
+                            <p>{t('retrievePanel.querySettings.enableRerankTooltip')}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <Checkbox
+                        className="mr-10 cursor-pointer"
+                        id="enable_rerank"
+                        checked={querySettings.enable_rerank}
+                        onCheckedChange={(checked) => handleChange('enable_rerank', checked)}
+                      />
+                    </div>
 
-              <div className="flex items-center gap-2">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <label htmlFor="only_need_prompt" className="flex-1 ml-1 cursor-help">
-                        {t('retrievePanel.querySettings.onlyNeedPrompt')}
-                      </label>
-                    </TooltipTrigger>
-                    <TooltipContent side="left">
-                      <p>{t('retrievePanel.querySettings.onlyNeedPromptTooltip')}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <Checkbox
-                  className="mr-10 cursor-pointer"
-                  id="only_need_prompt"
-                  checked={querySettings.only_need_prompt}
-                  onCheckedChange={(checked) => {
-                    handleChange('only_need_prompt', checked)
-                    if (checked) {
-                      handleChange('only_need_context', false)
-                    }
-                  }}
-                />
-              </div>
+                    <div className="flex items-center gap-2">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <label htmlFor="only_need_context" className="flex-1 ml-1 cursor-help">
+                              {t('retrievePanel.querySettings.onlyNeedContext')}
+                            </label>
+                          </TooltipTrigger>
+                          <TooltipContent side="left">
+                            <p>{t('retrievePanel.querySettings.onlyNeedContextTooltip')}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <Checkbox
+                        className="mr-10 cursor-pointer"
+                        id="only_need_context"
+                        checked={querySettings.only_need_context}
+                        onCheckedChange={(checked) => {
+                          handleChange('only_need_context', checked)
+                          if (checked) {
+                            handleChange('only_need_prompt', false)
+                          }
+                        }}
+                      />
+                    </div>
 
-              <div className="flex items-center gap-2">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <label htmlFor="stream" className="flex-1 ml-1 cursor-help">
-                        {t('retrievePanel.querySettings.streamResponse')}
-                      </label>
-                    </TooltipTrigger>
-                    <TooltipContent side="left">
-                      <p>{t('retrievePanel.querySettings.streamResponseTooltip')}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <Checkbox
-                  className="mr-10 cursor-pointer"
-                  id="stream"
-                  checked={querySettings.stream}
-                  onCheckedChange={(checked) => handleChange('stream', checked)}
-                />
-              </div>
-            </>
+                    <div className="flex items-center gap-2">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <label htmlFor="only_need_prompt" className="flex-1 ml-1 cursor-help">
+                              {t('retrievePanel.querySettings.onlyNeedPrompt')}
+                            </label>
+                          </TooltipTrigger>
+                          <TooltipContent side="left">
+                            <p>{t('retrievePanel.querySettings.onlyNeedPromptTooltip')}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <Checkbox
+                        className="mr-10 cursor-pointer"
+                        id="only_need_prompt"
+                        checked={querySettings.only_need_prompt}
+                        onCheckedChange={(checked) => {
+                          handleChange('only_need_prompt', checked)
+                          if (checked) {
+                            handleChange('only_need_context', false)
+                          }
+                        }}
+                      />
+                    </div>
 
+                    <div className="flex items-center gap-2">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <label htmlFor="stream" className="flex-1 ml-1 cursor-help">
+                              {t('retrievePanel.querySettings.streamResponse')}
+                            </label>
+                          </TooltipTrigger>
+                          <TooltipContent side="left">
+                            <p>{t('retrievePanel.querySettings.streamResponseTooltip')}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <Checkbox
+                        className="mr-10 cursor-pointer"
+                        id="stream"
+                        checked={querySettings.stream}
+                        onCheckedChange={(checked) => handleChange('stream', checked)}
+                      />
+                    </div>
+                  </>
+                </>
+              )
+            }
           </div>
         </div>
       </CardContent>
