@@ -8,24 +8,40 @@ services:
       tags:
         - ghcr.io/hkuds/lightrag:latest
     ports:
-      - "${PORT:-9621}:9621"
+      - "${PORT:-9621}:9622"
     volumes:
       - ./data/rag_storage:/app/data/rag_storage
       - ./data/inputs:/app/data/inputs
       - ./data/tiktoken:/app/data/tiktoken
       - ./config.ini:/app/config.ini
       - ./.env:/app/.env
-      - ./lightrag:/app/lightrag
     env_file:
       - .env
     environment:
       - TIKTOKEN_CACHE_DIR=/app/data/tiktoken
 #    depends_on:
-##      - db
+#      - db
 #      - ollama
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
+#  db:
+#    image: registry-1.docker.io/nikolayfm/lightrag-db:latest
+##    build:
+##      context: .
+##      dockerfile: DockerfilePOSTGRES
+#    container_name: lightrag_db
+#    restart: always
+#    environment:
+#      - POSTGRES_USER=${POSTGRES_USER}
+#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#      - POSTGRES_DB=${POSTGRES_DATABASE}
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - ./db-init:/docker-entrypoint-initdb.d
+#      - ./data/postgres:/var/lib/postgresql/data
 
 #  ollama:
 #    image: ollama/ollama:latest
