@@ -2,11 +2,11 @@ services:
   lightrag:
     container_name: lightrag
     image: ghcr.io/hkuds/lightrag:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-      tags:
-        - ghcr.io/hkuds/lightrag:latest
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#      tags:
+#        - ghcr.io/hkuds/lightrag:latest
     ports:
       - "${PORT:-9622}:9622"
     volumes:
@@ -15,6 +15,7 @@ services:
       - ./data/tiktoken:/app/data/tiktoken
       - ./config.ini:/app/config.ini
       - ./.env:/app/.env
+      - ./data/postgres:/var/lib/postgresql/data
     env_file:
       - .env
     environment:
