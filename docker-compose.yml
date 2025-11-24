@@ -14,6 +14,7 @@ services:
       - ./data/inputs:/app/data/inputs
       - ./data/tiktoken:/app/data/tiktoken
       - ./config.ini:/app/config.ini
+      - ./.env:/app/.env
     env_file:
       - .env
     environment:
