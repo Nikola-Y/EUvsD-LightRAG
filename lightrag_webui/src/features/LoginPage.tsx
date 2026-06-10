@@ -21,10 +21,6 @@ const LoginPage = () => {
   const [checkingAuth, setCheckingAuth] = useState(true)
   const authCheckRef = useRef(false); // Prevent duplicate calls in Vite dev mode
 
-  if (username === 'admin') {
-    setPassword('')
-  }
-
   const handleLogin = async (usernameField: string, passwordField: any) => {
     if (!usernameField) {
       toast.error(t('login.errorEmptyFields'))
@@ -94,6 +90,12 @@ const LoginPage = () => {
   useEffect(() => {
     // Get previous username from localStorage
     const previousUsername = localStorage.getItem('LIGHTRAG-PREVIOUS-USER')
+
+    if (username !== 'user') {
+      setPassword('')
+    } else {
+      setPassword('password')
+    }
 
     if ((previousUsername === '' || previousUsername === null) && (username === '' || username === 'user')) {
       setUsername('user');
