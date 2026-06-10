@@ -21,7 +21,7 @@ const LoginPage = () => {
   const [checkingAuth, setCheckingAuth] = useState(true)
   const authCheckRef = useRef(false); // Prevent duplicate calls in Vite dev mode
 
-  if (username === 'user') {
+  if (username === 'admin') {
     setPassword('')
   }
 
