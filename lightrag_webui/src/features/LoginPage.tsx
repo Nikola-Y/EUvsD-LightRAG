@@ -21,6 +21,10 @@ const LoginPage = () => {
   const [checkingAuth, setCheckingAuth] = useState(true)
   const authCheckRef = useRef(false); // Prevent duplicate calls in Vite dev mode
 
+  if (username === 'user') {
+    setPassword('')
+  }
+
   const handleLogin = async (usernameField: string, passwordField: any) => {
     if (!usernameField) {
       toast.error(t('login.errorEmptyFields'))
