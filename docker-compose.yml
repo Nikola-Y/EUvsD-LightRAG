@@ -27,20 +27,6 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-  db:
-      image: registry-1.docker.io/nikolayfm/lightrag-db:latest
-      container_name: lightrag_db
-      restart: always
-      environment:
-        - POSTGRES_USER=${POSTGRES_USER}
-        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-        - POSTGRES_DB=${POSTGRES_DATABASE}
-      ports:
-        - "5432:5432"
-      volumes:
-        - ./db-init:/docker-entrypoint-initdb.d
-        - ./data/postgres:/var/lib/postgresql/data
-
 #  ollama:
 #    image: ollama/ollama:latest
 #    container_name: ollama_service
