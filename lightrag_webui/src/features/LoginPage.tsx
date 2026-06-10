@@ -17,7 +17,7 @@ const LoginPage = () => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [username, setUsername] = useState('user')
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState('password')
   const [checkingAuth, setCheckingAuth] = useState(true)
   const authCheckRef = useRef(false); // Prevent duplicate calls in Vite dev mode
 
@@ -195,21 +195,19 @@ const LoginPage = () => {
                 className="h-11 flex-1"
               />
             </div>
-            {username !== 'user' && (
-              <div className="flex items-center gap-4">
-                <label htmlFor="password-input" className="text-sm font-medium w-16 shrink-0">
-                  {t('login.password')}
-                </label>
-                <Input
-                  id="password-input"
-                  type="password"
-                  placeholder={t('login.passwordPlaceholder')}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-11 flex-1"
-                />
-              </div>
-            )}
+            <div className="flex items-center gap-4" style={username === 'user' ? { display: 'none' } : undefined}>
+              <label htmlFor="password-input" className="text-sm font-medium w-16 shrink-0">
+                {t('login.password')}
+              </label>
+              <Input
+                id="password-input"
+                type="password"
+                placeholder={t('login.passwordPlaceholder')}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="h-11 flex-1"
+              />
+            </div>
             <Button
               type="submit"
               className="w-full h-11 text-base font-medium mt-2"
