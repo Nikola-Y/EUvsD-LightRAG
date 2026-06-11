@@ -5,12 +5,10 @@ services:
     ports:
       - "${PORT:-9621}:${PORT:-9621}"
     volumes:
-      - ./data/rag_storage:/app/data/rag_storage
-      - ./data/inputs:/app/data/inputs
-      - ./data/tiktoken:/app/data/tiktoken
-      - ./config.ini:/app/config.ini
-      - ./.env:/app/.env
-      - ./lightrag:/app/lightrag
+      - lightrag_storage:/app/data/rag_storage
+      - lightrag_inputs:/app/data/inputs
+      - lightrag_tiktoken:/app/data/tiktoken
+      - lightrag_app:/app
     env_file:
       - .env
     environment:
@@ -28,11 +26,17 @@ services:
     ports:
       - "${SFTP_PORT:-2222}:22"
     volumes:
-      - ./:/home/${SFTP_USER:-sftp_user}/app
+      - lightrag_app:/home/${SFTP_USER:-sftp_user}/app
     environment:
       - SFTP_USERS=${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:1001
     restart: unless-stopped
     command: ${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:1001
+
+volumes:
+  lightrag_storage:
+  lightrag_inputs:
+  lightrag_tiktoken:
+  lightrag_app:
 
 #  ollama:
 #    image: ollama/ollama:latest
