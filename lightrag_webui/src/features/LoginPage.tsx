@@ -17,7 +17,7 @@ const LoginPage = () => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const [username, setUsername] = useState('user')
-  const [password, setPassword] = useState('password')
+  const [password, setPassword] = useState('')
   const [checkingAuth, setCheckingAuth] = useState(true)
   const authCheckRef = useRef(false); // Prevent duplicate calls in Vite dev mode
 
@@ -91,17 +91,22 @@ const LoginPage = () => {
     // Get previous username from localStorage
     const previousUsername = localStorage.getItem('LIGHTRAG-PREVIOUS-USER')
 
-    if (username !== 'user') {
-      setPassword('')
-    } else {
-      setPassword('password')
+    if (
+      (previousUsername === '' || previousUsername === null) &&
+      (username === '' || username === 'user')
+    ) {
+      setUsername('user')
+      handleLogin('user', 'password')
     }
+  }, [handleLogin, username])
 
-    if ((previousUsername === '' || previousUsername === null) && (username === '' || username === 'user')) {
-      setUsername('user');
-      handleLogin('user', '');
+  useEffect(() => {
+    if (username === 'user') {
+      setPassword('password')
+    } else {
+      setPassword('')
     }
-  }, [handleLogin, username]);
+  }, [username])
 
   useEffect(() => {
     console.log('LoginPage mounted')
