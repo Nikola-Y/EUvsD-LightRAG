@@ -48,9 +48,9 @@ services:
     volumes:
       - lightrag_app:/home/${SFTP_USER:-sftp_user}/lightrag_app:rw
     environment:
-      - SFTP_USERS=${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:1001
+      - SFTP_USERS=${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:0
     restart: unless-stopped
-    command: ${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:1001
+    command: ${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:0
 
 volumes:
   lightrag_storage:
