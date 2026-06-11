@@ -20,13 +20,33 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  migrate-all:
+    image: busybox:latest
+    container_name: lightrag_migrate_all
+    volumes:
+      - ./data/rag_storage:/rag_storage
+      - ./data/inputs:/inputs
+      - ./data/tiktoken:/tiktoken
+      - ./:/lightrag_app
+      - lightrag_storage:/dest_rag_storage
+      - lightrag_inputs:/dest_inputs
+      - lightrag_tiktoken:/dest_tiktoken
+      - lightrag_app:/dest_lightrag_app
+    command: sh -c "
+      cp -r /rag_storage/* /dest_rag_storage/ 2>/dev/null || true &&
+      cp -r /inputs/* /dest_inputs/ 2>/dev/null || true &&
+      cp -r /tiktoken/* /dest_tiktoken/ 2>/dev/null || true &&
+      cp -r /lightrag_app/* /dest_lightrag_app/ 2>/dev/null || true &&
+      echo 'All data migrated successfully'"
+    restart: "no"
+
   sftp:
     image: atmoz/sftp:latest
     container_name: lightrag_sftp
     ports:
       - "${SFTP_PORT:-2222}:22"
     volumes:
-      - lightrag_app:/home/${SFTP_USER:-sftp_user}/app
+      - lightrag_app:/home/${SFTP_USER:-sftp_user}/lightrag_app:rw
     environment:
       - SFTP_USERS=${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:1001
     restart: unless-stopped
