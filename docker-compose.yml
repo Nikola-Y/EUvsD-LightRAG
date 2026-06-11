@@ -9,6 +9,7 @@ services:
       - lightrag_inputs:/app/data/inputs
       - lightrag_tiktoken:/app/data/tiktoken
       - lightrag_app:/app
+      - .env:/app/.env
     env_file:
       - .env
     environment:
