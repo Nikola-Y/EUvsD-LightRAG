@@ -48,9 +48,15 @@ services:
     volumes:
       - lightrag_app:/home/${SFTP_USER:-sftp_user}/lightrag_app:rw
     environment:
-      - SFTP_USERS=${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:0
+      - SFTP_USERS=${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:1001
     restart: unless-stopped
-    command: ${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:0
+    entrypoint: |
+      sh -c "
+      chown -R 1001:1001 /home/${SFTP_USER:-sftp_user}/lightrag_app &&
+      chmod -R 755 /home/${SFTP_USER:-sftp_user}/lightrag_app &&
+      /entrypoint ${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:1001
+      "
+    command: ${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:1001
 
 volumes:
   lightrag_storage:
