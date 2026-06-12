@@ -1,6 +1,6 @@
 services:
   lightrag:
-    container_name: lightrag${CONTAINER_PREFIX:}
+    container_name: lightrag${CONTAINER_PREFIX}
     image: ghcr.io/hkuds/lightrag:v1.5.0
     ports:
       - "${PORT:-9621}:${PORT:-9621}"
@@ -20,7 +20,7 @@ services:
 
   migrate-all:
      image: busybox:latest
-     container_name: lightrag_migrate_all${CONTAINER_PREFIX:}
+     container_name: lightrag_migrate_all${CONTAINER_PREFIX}
      volumes:
         - ./data/rag_storage:/rag_storage
         - ./data/inputs:/inputs
@@ -40,7 +40,7 @@ services:
 
   sftp:
     image: atmoz/sftp:latest
-    container_name: lightrag_sftp${CONTAINER_PREFIX:}
+    container_name: lightrag_sftp${CONTAINER_PREFIX}
     ports:
       - "${SFTP_PORT:-2222}:22"
     volumes:
