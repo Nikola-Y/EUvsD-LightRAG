@@ -1,0 +1,52 @@
+services:
+  lightrag:
+    container_name: lightrag
+    image: ghcr.io/hkuds/lightrag:v1.5.0
+    ports:
+      - "${PORT:-9621}:${PORT:-9621}"
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    environment:
+      - TIKTOKEN_CACHE_DIR=/app/data/tiktoken
+    depends_on:
+      - db
+#      - ollama
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+    image: registry-1.docker.io/nikolayfm/lightrag-db:latest
+    container_name: lightrag_db
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DATABASE}
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+#  ollama:
+#    image: ollama/ollama:latest
+#    container_name: ollama_service
+##    environment:
+##      - NVIDIA_VISIBLE_DEVICES=all
+##    runtime: nvidia
+#    ports:
+#      - "11434:11434" # порт для API Ollama
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - driver: nvidia
+#              count: all
+#              capabilities: [gpu]
