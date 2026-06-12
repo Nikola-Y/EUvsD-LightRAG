@@ -54,13 +54,13 @@ services:
     entrypoint: |
       sh -c "
       chown -R 1001:1001 /home/${SFTP_USER:-sftp_user}/lightrag_app &&
-      chmod -R 755 /home/${SFTP_USER:-sftp_user}/lightrag_app &&
+      chmod -R 777 /home/${SFTP_USER:-sftp_user}/lightrag_app &&
       chown -R 1001:1001 /home/${SFTP_USER:-sftp_user}/lightrag_storage &&
-      chmod -R 755 /home/${SFTP_USER:-sftp_user}/lightrag_storage &&
+      chmod -R 777 /home/${SFTP_USER:-sftp_user}/lightrag_storage &&
       chown -R 1001:1001 /home/${SFTP_USER:-sftp_user}/lightrag_inputs &&
-      chmod -R 755 /home/${SFTP_USER:-sftp_user}/lightrag_inputs &&
+      chmod -R 777 /home/${SFTP_USER:-sftp_user}/lightrag_inputs &&
       chown -R 1001:1001 /home/${SFTP_USER:-sftp_user}/lightrag_tiktoken &&
-      chmod -R 755 /home/${SFTP_USER:-sftp_user}/lightrag_tiktoken &&
+      chmod -R 777 /home/${SFTP_USER:-sftp_user}/lightrag_tiktoken &&
       /entrypoint ${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:1001
       "
     command: ${SFTP_USER:-sftp_user}:${SFTP_PASSWORD:-password}:1001
